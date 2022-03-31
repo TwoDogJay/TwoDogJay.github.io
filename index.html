@@ -154,6 +154,67 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-Modules and vectors" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><img src="https://img2022.cnblogs.com/blog/2814298/202203/2814298-20220331111234769-390930710.png"></p>
+<p>题目要求如上不再赘述，主要关注到最后的四选一多路选择器。</p>
+<p>最初编写的选择器代码如下</p>
+<figure class="highlight verilog"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">always</span>@(sel)</span><br><span class="line">        <span class="keyword">case</span>(sel)</span><br><span class="line">            <span class="number">2&#x27;d0</span>:q &lt;= d;</span><br><span class="line">            <span class="number">2&#x27;d1</span>:q &lt;= in1;</span><br><span class="line">            <span class="number">2&#x27;d2</span>:q &lt;= in2;</span><br><span class="line">            <span class="number">2&#x27;d3</span>:q &lt;= in3;</span><br><span class="line">            <span class="keyword">default</span>: ;</span><br></pre></td></tr></table></figure>
+
+
+<p>此时会爆出警告</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Warning (10235): Verilog HDL Always Construct warning at top_module.v(27): variable &quot;d&quot; is read inside the Always Construct but isn&#x27;t in the Always Construct&#x27;s Event Control File: /home/h/work/hdlbits.4515504/top_module.v Line: 27</span><br><span class="line"></span><br><span class="line">Warning (10235): Verilog HDL Always Construct warning at top_module.v(28): variable &quot;in1&quot; is read inside the Always Construct but isn&#x27;t in the Always Construct&#x27;s Event Control File: /home/h/work/hdlbits.4515504/top_module.v Line: 28</span><br><span class="line"></span><br><span class="line">Warning (10235): Verilog HDL Always Construct warning at top_module.v(29): variable &quot;in2&quot; is read inside the Always Construct but isn&#x27;t in the Always Construct&#x27;s Event Control File: /home/h/work/hdlbits.4515504/top_module.v Line: 29</span><br></pre></td></tr></table></figure>
+<p>然后修改代码为</p>
+<figure class="highlight verilog"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">always</span>@(sel,d,in1,in2,in3)</span><br><span class="line">        <span class="keyword">case</span>(sel)</span><br><span class="line">            <span class="number">2&#x27;d0</span>:q &lt;= d;</span><br><span class="line">            <span class="number">2&#x27;d1</span>:q &lt;= in1;</span><br><span class="line">            <span class="number">2&#x27;d2</span>:q &lt;= in2;</span><br><span class="line">            <span class="number">2&#x27;d3</span>:q &lt;= in3;</span><br><span class="line">            <span class="keyword">default</span>: ;</span><br><span class="line">        <span class="keyword">endcase</span></span><br></pre></td></tr></table></figure>
+
+<p>此时警告消失，这是因为在always组合逻辑电路中，敏感列表应当包含always块中所有的输入信号才不会引发错误，当然此处也可以用</p>
+<figure class="highlight verilog"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">always</span>@(*)</span><br><span class="line">        <span class="keyword">case</span>(sel)</span><br><span class="line">            <span class="number">2&#x27;d0</span>:q &lt;= d;</span><br><span class="line">            <span class="number">2&#x27;d1</span>:q &lt;= in1;</span><br><span class="line">            <span class="number">2&#x27;d2</span>:q &lt;= in2;</span><br><span class="line">            <span class="number">2&#x27;d3</span>:q &lt;= in3;</span><br><span class="line">            <span class="keyword">default</span>: ;</span><br><span class="line">        <span class="keyword">endcase</span></span><br></pre></td></tr></table></figure>
+<p>这样才能保证每一个敏感信号都是能够正常起作用的。</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2022/03/31/Modules%20and%20vectors/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-我的第一篇博客" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
